@@ -1,7 +1,6 @@
 import lexical.Lexical
 import lexical.dfa.DFABuilder
-import token.Token
-import token.literal.IntLiteralToken
+import token.attr.IntConstAttr
 
 object Setup {
     fun getDfa() = DFABuilder<Int>()
@@ -33,8 +32,7 @@ object Setup {
         .compile()
 
     fun getLex() = Lexical(getDfa())
-        .tokenRule(2) { Token("IF") }
-        .tokenRule(7) { Token("WHILE") }
-        .tokenRule(9, null)
-        .tokenRule(11) { IntLiteralToken(it.toInt()) }
+        .tokenRule(2, "IF")
+        .tokenRule(7, "WHILE")
+        .tokenRule(11, "INT_CONST") { IntConstAttr(it.toInt()) }
 }

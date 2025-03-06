@@ -3,18 +3,25 @@ package lexical
 import Globals
 import lexical.dfa.DFA
 import token.Token
+import token.attr.TokenAttr
 
 class Lexical<T>(private val dfa: DFA<T>) {
-    private val tokenRules = mutableMapOf<T, ((String) -> Token)?>()
+    private val tokenRules = mutableMapOf<T, Pair<String, (String) -> TokenAttr?>>()
     private var fileReader: FileReader? = null
-    private var columnCount = 0
-    private var lineCount = 0
+    private var rowCount = 1
+    private var columnCount = 1
 
     fun setInput(filepath: String) = apply {
         fileReader = FileReader(filepath)
     }
 
-    fun tokenRule(state: T, getToken: ((String) -> Token)?) = apply { tokenRules[state] = getToken }
+    fun tokenRule(
+        state: T,
+        tokenName: String,
+        getToken: (String) -> TokenAttr? = { null }
+    ) = apply {
+        tokenRules[state] = Pair(tokenName, getToken)
+    }
 
     fun nextToken(): Token? {
         checkNotNull(fileReader) { "File input must be defined" }
@@ -25,6 +32,7 @@ class Lexical<T>(private val dfa: DFA<T>) {
 
         var lexeme = ""
         var state = dfa.reset().getState()
+        val lexemeStart = Pair(rowCount, columnCount)
 
         while(!state.isAcceptState) {
             val c = fileReader!!.getChar() ?: Globals.EOF_CHAR
@@ -38,21 +46,18 @@ class Lexical<T>(private val dfa: DFA<T>) {
             }
 
             if (state.isErrorState)
-                throw Exception("Malformed Token: $lexeme [line: $lineCount, column: $columnCount]")
+                throw Exception("Malformed Token: \"$lexeme\"[row: ${lexemeStart.first}, column: ${lexemeStart.second}]")
         }
 
-        // All token rules must be explicitly defined
-        if (!tokenRules.containsKey(state.state))
-            throw Exception("Token rule not set for ${state.state}")
-
-        // If token rule is NULL throw the token away and get the next
-        return tokenRules[state.state]?.invoke(lexeme) ?: nextToken()
+        return tokenRules[state.state]?.let {
+            Token(it.first, lexemeStart, it.second(lexeme))
+        } ?: nextToken()
     }
 
     private fun processRowColumn(c: Char) {
         if (c == '\n') {
-            lineCount++
-            columnCount = 0
+            rowCount++
+            columnCount = 1
         } else {
             columnCount++
         }
