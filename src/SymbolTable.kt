@@ -10,8 +10,7 @@ class SymbolTable {
     }
 
     override fun toString() = buildString {
-        toArray().forEachIndexed { i, symbol ->
+        for ((i, symbol) in toArray().withIndex())
             append("${i.toString().padStart(3, '0')}: $symbol\n")
-        }
     }
 }
