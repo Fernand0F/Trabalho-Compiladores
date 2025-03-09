@@ -1,7 +1,11 @@
 package lexical
 
 import Globals
-import SymbolTable
+import symboltable.*
+import symboltable.entry.literal.CharLiteralEntry
+import symboltable.entry.literal.FloatLiteralEntry
+import symboltable.entry.literal.IntLiteralEntry
+import symboltable.entry.TableEntry
 import token.Token
 import token.TokenName
 import token.attr.*
@@ -118,11 +122,19 @@ class Lexical(private val symbolTable: SymbolTable) {
                 }
                 9 -> {
                     isLookAhead = true
-                    token = Token(TokenName.CONST_NUM, lexemeStart, IntLiteralAttr(lexeme.toInt()))
+                    token = Token(
+                        TokenName.CONST_NUM,
+                        lexemeStart,
+                        IdAttr(symbolTable.get(IntLiteralEntry(lexeme, lexeme.toInt())))
+                    )
                 }
                 10 -> {
                     isLookAhead = true
-                    token = Token(TokenName.CONST_NUM, lexemeStart, FloatLiteralAttr(lexeme.toFloat()))
+                    token = Token(
+                        TokenName.CONST_NUM,
+                        lexemeStart,
+                        IdAttr(symbolTable.get(FloatLiteralEntry(lexeme, lexeme.toFloat())))
+                    )
                 }
                 11 -> {
                     when (c) {
@@ -144,7 +156,12 @@ class Lexical(private val symbolTable: SymbolTable) {
                     }
                 }
                 14 -> {
-                    token = Token(TokenName.CONST_CHAR, lexemeStart, CharLiteralAttr(if (lexeme[1] == '\\') lexeme[2] else lexeme[1]))
+                    val cLex = if (lexeme[1] == '\\') lexeme[2] else lexeme[1]
+                    token = Token(
+                        TokenName.CONST_CHAR,
+                        lexemeStart,
+                        IdAttr(symbolTable.get(CharLiteralEntry(cLex.toString(), cLex)))
+                    )
                 }
                 15 -> {
                     when (c) {
@@ -572,7 +589,10 @@ class Lexical(private val symbolTable: SymbolTable) {
                 }
                 94 -> {
                     isLookAhead = true
-                    token = Token(TokenName.ID, lexemeStart, IdAttr(symbolTable.get(lexeme)))
+                    token = Token(
+                        TokenName.ID,
+                        lexemeStart,
+                        IdAttr(symbolTable.get(TableEntry(TokenName.ID, lexeme))))
                 }
                 200 -> {fail(lexeme, lexemeStart)}
             }

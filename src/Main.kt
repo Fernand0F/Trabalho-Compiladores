@@ -1,4 +1,5 @@
 import lexical.Lexical
+import symboltable.SymbolTable
 
 fun main() {
     val symbolTable = SymbolTable()

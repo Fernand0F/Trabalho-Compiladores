@@ -1,5 +1,5 @@
 package token.attr
 
-open class LiteralAttr(val type: DataType): TokenAttr {
-    override fun toString() = "$type"
+abstract class LiteralAttr(val type: DataType): TokenAttr {
+    abstract override fun toString(): String
 }
