@@ -4,9 +4,11 @@ class SymbolTable {
 
     fun get(symbol: String) = table.getOrPut(symbol) { i++ }
 
-    fun toArray() = table.toList().fold(Array(i) { "" }) { carry, (symbol, i) ->
-        carry[i] = symbol
-        return carry
+    fun toArray(): Array<String> {
+        val a = Array(i) { "" }
+        for ((symbol, index) in table)
+            a[index] = symbol
+        return a
     }
 
     override fun toString() = buildString {

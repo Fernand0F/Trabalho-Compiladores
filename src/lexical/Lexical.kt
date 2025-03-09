@@ -1,27 +1,18 @@
 package lexical
 
 import Globals
-import lexical.dfa.DFA
+import SymbolTable
 import token.Token
 import token.TokenName
 import token.attr.*
 
-class Lexical<T>(private val dfa: DFA<T>) {
-    private val tokenRules = mutableMapOf<T, Pair<String, (String) -> TokenAttr?>>()
+class Lexical(private val symbolTable: SymbolTable) {
     private var fileReader: FileReader? = null
     private var rowCount = 1
     private var columnCount = 1
 
     fun setInput(filepath: String) = apply {
         fileReader = FileReader(filepath)
-    }
-
-    fun tokenRule(
-        state: T,
-        tokenName: String,
-        getToken: (String) -> TokenAttr? = { null }
-    ) = apply {
-        tokenRules[state] = Pair(tokenName, getToken)
     }
 
     fun nextToken(): Token? {
@@ -581,25 +572,25 @@ class Lexical<T>(private val dfa: DFA<T>) {
                 }
                 94 -> {
                     isLookAhead = true
-                    token = Token(TokenName.ID, lexemeStart, null) //TODO attribute ID
+                    token = Token(TokenName.ID, lexemeStart, IdAttr(symbolTable.get(lexeme)))
                 }
                 200 -> {fail(lexeme, lexemeStart)}
             }
 
-            if (token != null) {
+            if (token != null)
                 return token
-            }
+
             if (!isLookAhead) {
                 lexeme += c
                 fileReader!!.next()
                 processRowColumn(c)
             }
+
             if (restart) {
                 lexeme = ""
                 state = 0
                 lexemeStart = Pair(rowCount, columnCount)
             }
-
         }
     }
 
