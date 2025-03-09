@@ -1,2 +1,11 @@
-while678if213133
-5435if
+programa main () {%
+    int: x, y, z;
+    char: a, b, c;
+    float: x2, y33a3, zzzif938elsez;
+
+    if [x <= 3.5E-2] then {%
+
+    %} elseif [zzzif938elsez <> 'T'] {%
+        b := 1 + y33a3;
+    %}
+%}

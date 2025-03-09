@@ -47,7 +47,7 @@ class DFABuilder<T> {
             carry.apply {
                 add(s1)
                 compiledAccept.add(s1)
-                alphabet.forEach { c -> compiledTransitions.getOrPut(s0 to c) { s1 } }
+                alphabet.forEach { c -> compiledTransitions.computeIfAbsent(s0 to c) { s1 } }
             }
         }
 
