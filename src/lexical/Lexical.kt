@@ -606,12 +606,9 @@ class Lexical(private val symbolTable: SymbolTable) {
                 processRowColumn(c)
             }
 
-            if (restart) {
-                lexeme = ""
-                state = 0
-                lexemeStart = Pair(rowCount, columnCount)
-            }
-        }
+            if (restart)
+                return nextToken()
+        }   
     }
 
     private fun processRowColumn(c: Char) {
