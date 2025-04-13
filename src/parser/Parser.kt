@@ -39,44 +39,39 @@ class Parser(val lexer: Lexical) {
             if (symbol.isTerminal) {
                 if (symbol.terminal!! == nextToken.name) {
                     stack.pop()
-                    currentNode.children.add(ParseTreeNode(Symbol(nextToken)))
+                    currentNode.symbol.terminal!!.loc = nextToken.loc
+                    currentNode.symbol.terminal!!.attr = nextToken.attr
                     nextToken = lexer.nextToken()
+                }
+                else if (symbol.terminal!! == TokenName.EPSILON) {
+                    stack.pop()
+                    currentNode.symbol.terminal!!.loc = nextToken.loc
+                    currentNode.symbol.terminal!!.attr = nextToken.attr
                 }
                 else {
                     throw Exception("Erro")
                 }
             }
             else {
-                val production = table.getOrDefault(Pair(symbol.nonTerminal!!, nextToken!!.name), -1)
+                val production = table.getOrDefault(Pair(symbol.nonTerminal!!, nextToken.name), -1)
                 if (production == -1) {
                     throw Exception("Erro")
                 }
                 else {
-                    //TODO tratar produção
                     stack.pop()
-                    for (i in productions[production].lastIndex downTo 0) {
-                        val y = productions[production][i]
-                        if (y.isTerminal && y.terminal!! == TokenName.EPSILON) {
-                            continue
+                    for (y in productions[production].asReversed()) {
+                        stack.push(y)
+                        val node = when (y.isTerminal) {
+                            true -> ParseTreeNode(Symbol(Token(y.terminal!!, Pair(0,0), null)))
+                            false -> ParseTreeNode(Symbol(y.nonTerminal!!))
                         }
-                        stack.push(productions[production][i])
+                        nodeStack.push(node)
+                        currentNode.children.add(node)
                     }
-                    for (y in productions[production]) {
-                        if (!y.isTerminal) {
-                            val child = ParseTreeNode(Symbol(y.nonTerminal!!))
-                            currentNode.children.add(child)
-                            nodeStack.push(child)
-                        }
-                        else {
-                            val child = ParseTreeNode(Symbol(Token(y.terminal!!, Pair(0,0), null)))
-                            currentNode.children.add(child)
-                            nodeStack.push(child)
-                        }
-                    }
+                    currentNode.children.reverse()
                 }
             }
         }
-        //TODO
         if (nextToken.name != TokenName.EOF) {
             throw Exception("Erro")
         }

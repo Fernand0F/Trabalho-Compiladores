@@ -3,13 +3,12 @@ package token
 import Globals
 import token.attr.TokenAttr
 
-class Token(val name: TokenName, val loc: Pair<Int, Int>, val attr: TokenAttr?) {
-    private val str = buildString {
-        append("[${Globals.BLUE}$name${Globals.RESET_COLOR} loc=(${loc.first}, ${loc.second})")
-        if (attr != null)
-            append(" attr=($attr)")
-        append("]")
+class Token(val name: TokenName, var loc: Pair<Int, Int>, var attr: TokenAttr?) {
+    override fun toString(): String {
+        val s = "[${Globals.BLUE}$name${Globals.RESET_COLOR} loc=(${loc.first}, ${loc.second})"
+        when (attr) {
+            null -> return "$s]"
+            else -> return "$s attr=($attr)]"
+        }
     }
-
-    override fun toString() = str
 }
