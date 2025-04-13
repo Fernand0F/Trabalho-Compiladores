@@ -1,9 +1,6 @@
-if
-123
-then
-if
-1234
-then
-:=
-else
-:=
+programa asassa ()
+{%
+    {# Este é um comentário de exemplo #}
+    int: a;
+%}
+if while

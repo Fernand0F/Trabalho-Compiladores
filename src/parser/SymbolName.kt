@@ -15,4 +15,9 @@ class SymbolName {
         this.terminal = terminal
         isTerminal = true
     }
+
+    override fun toString(): String {
+        if (isTerminal) return terminal.toString()
+        return nonTerminal.toString()
+    }
 }
