@@ -19,19 +19,21 @@ class Lexical(private val symbolTable: SymbolTable) {
         fileReader = FileReader(filepath)
     }
 
-    fun nextToken(): Token? {
+    fun nextToken(): Token {
         checkNotNull(fileReader) { "File input must be defined" }
 
-        // Look for file end
-        if (fileReader!!.getChar() == null)
-            return null
+
 
         var lexeme = ""
         var state = 0
         var lexemeStart = Pair(rowCount, columnCount)
 
+        // Look for file end
+        if (fileReader!!.getChar() == Globals.EOF_CHAR)
+            return Token(TokenName.EOF, lexemeStart, null)
+
         while(true) {
-            val c = fileReader!!.getChar() ?: Globals.EOF_CHAR
+            val c = fileReader!!.getChar()
             var isLookAhead = false
             var restart = false
             var token: Token? = null
@@ -67,6 +69,7 @@ class Lexical(private val symbolTable: SymbolTable) {
                         c == 'w' -> state = 78
                         c == 'p' -> state = 84
                         c in "abghjklmnoqrsuvxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_" -> state = 93
+                        c == Globals.EOF_CHAR -> token = Token(TokenName.EOF, lexemeStart, null)
                         else -> state = 200
                     }
                 }

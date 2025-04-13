@@ -1,0 +1,26 @@
+package parser
+
+enum class NonTerminal {
+    PROGRAMA,
+    BLOCO,
+    DECLARACOES,
+    DECLARACAO,
+    LISTA_IDS,
+    LISTA_IDS2,
+    COMANDOS,
+    COMANDO,
+    SELECAO,
+    CMD_BLOCO,
+    ELSE_IF,
+    REPETICAO_WD,
+    REPETICAO_DW,
+    ATRIBUICAO,
+    CONDICAO,
+    EXPRESSAO,
+    EXPRESSAO2,
+    TERMO,
+    TERMO2,
+    FATOR,
+    FATOR2,
+    POTENCIA
+}

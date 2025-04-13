@@ -8,9 +8,9 @@ class FileReader(filepath: String, private val bufferSize: Int = 100) {
     private var bufferIndex = 0
     private var closed = false
 
-    fun getChar(): Char? {
+    fun getChar(): Char {
         if (closed || (bufferIndex == buffer.size && !nextChunk()))
-            return null
+            return Globals.EOF_CHAR
         return buffer[bufferIndex]
     }
 

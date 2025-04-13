@@ -25,5 +25,7 @@ enum class TokenName {
     MUL_DIV,
     POWER,
     CONST_NUM,
-    CONST_CHAR
+    CONST_CHAR,
+    EPSILON,
+    EOF
 }
