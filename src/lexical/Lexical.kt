@@ -22,13 +22,10 @@ class Lexical(private val symbolTable: SymbolTable) {
     fun nextToken(): Token {
         checkNotNull(fileReader) { "File input must be defined" }
 
-
-
         var lexeme = ""
         var state = 0
         var lexemeStart = Pair(rowCount, columnCount)
 
-        // Look for file end
         if (fileReader!!.getChar() == Globals.EOF_CHAR)
             return Token(TokenName.EOF, lexemeStart, null)
 

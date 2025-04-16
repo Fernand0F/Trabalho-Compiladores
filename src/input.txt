@@ -1,6 +1,5 @@
-programa asassa ()
+programa exemplo1 ( )
 {%
-    {# Este é um comentário de exemplo #}
-    int: a;
+    int: idade;
+    idade := 25;
 %}
-if while
